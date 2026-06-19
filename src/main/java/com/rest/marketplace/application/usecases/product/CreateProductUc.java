@@ -1,8 +1,9 @@
 package com.rest.marketplace.application.usecases.product;
 
 import com.rest.marketplace.domain.models.product.Product;
+import jakarta.validation.Valid;
 
-public interface GetProductUseCase {
+public interface CreateProductUc {
 
-	Product execute(Long id);
+	Product createProduct(@Valid Product product);
 }

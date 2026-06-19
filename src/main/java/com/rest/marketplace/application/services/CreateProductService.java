@@ -1,7 +1,6 @@
 package com.rest.marketplace.application.services;
 
-import com.rest.marketplace.application.usecases.product.GetProductUc;
-import com.rest.marketplace.domain.exceptions.ProductNotFoundException;
+import com.rest.marketplace.application.usecases.product.CreateProductUc;
 import com.rest.marketplace.domain.models.product.Product;
 import com.rest.marketplace.domain.ports.product.ProductPersistencePort;
 import lombok.RequiredArgsConstructor;
@@ -9,12 +8,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class GetProductService implements GetProductUc {
+public class CreateProductService implements CreateProductUc {
 
 	private final ProductPersistencePort productPersistencePort;
 
 	@Override
-	public Product findById(Long id) {
-		return productPersistencePort.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
+	public Product createProduct(Product product) {
+		return productPersistencePort.save(product);
 	}
 }
