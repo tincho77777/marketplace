@@ -1,5 +1,6 @@
 package com.rest.marketplace.infrastructure.rest.advice;
 
+import com.rest.marketplace.domain.exceptions.BadRequestException;
 import com.rest.marketplace.domain.exceptions.InvalidCategoryException;
 import com.rest.marketplace.domain.exceptions.ProductNotFoundException;
 import com.rest.marketplace.infrastructure.rest.advice.enums.ErrorCode;
@@ -95,5 +96,19 @@ public class GlobalExceptionHandler {
 		);
 
 		return ResponseEntity.badRequest().body(response);
+	}
+
+	@ExceptionHandler(BadRequestException.class)
+	public ResponseEntity<ErrorResponse> handleBadRequest(BadRequestException exception,
+	                                                      HttpServletRequest request){
+		var status = HttpStatus.BAD_REQUEST;
+		var error = new ErrorResponse(
+				status.value(),
+				ErrorCode.BAD_REQUEST.name(),
+				exception.getMessage(),
+				LocalDateTime.now(),
+				request.getRequestURI()
+		);
+		return ResponseEntity.status(status).body(error);
 	}
 }

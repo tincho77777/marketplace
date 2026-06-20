@@ -1,14 +1,14 @@
-package com.rest.marketplace.infrastructure.rest.product.request.mapper;
+package com.rest.marketplace.infrastructure.rest.product.request.update.mapper;
 
 import com.rest.marketplace.domain.enums.product.Category;
 import com.rest.marketplace.domain.models.product.Product;
-import com.rest.marketplace.infrastructure.rest.product.request.CreateProductRequest;
+import com.rest.marketplace.infrastructure.rest.product.request.update.UpdateProductRequest;
 
-public class ProductRequestMapper {
+public class UpdateProductRequestMapper {
 
-	private ProductRequestMapper(){}
+	private UpdateProductRequestMapper(){}
 
-	public static Product toDomain (CreateProductRequest request){
+	public static Product toDomain (UpdateProductRequest request){
 		return Product.builder()
 				.title(request.title())
 				.description(request.description())

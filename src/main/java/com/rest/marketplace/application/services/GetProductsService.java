@@ -1,6 +1,8 @@
 package com.rest.marketplace.application.services;
 
 import com.rest.marketplace.application.usecases.product.GetProductsUc;
+import com.rest.marketplace.domain.enums.product.ProductSortField;
+import com.rest.marketplace.domain.enums.product.SortDirection;
 import com.rest.marketplace.domain.models.common.PaginationRequest;
 import com.rest.marketplace.infrastructure.rest.common.response.PageResponse;
 import com.rest.marketplace.domain.models.product.Product;
@@ -16,6 +18,9 @@ public class GetProductsService implements GetProductsUc {
 
 	@Override
 	public PageResponse<Product> getProducts(PaginationRequest request) {
-		return productPersistencePort.findAll(request);
+		var sortField = ProductSortField.from(request.getSort());
+		var sortDirection = SortDirection.from(request.getDirection());
+		return productPersistencePort.findAll(request, sortField, sortDirection);
 	}
+
 }

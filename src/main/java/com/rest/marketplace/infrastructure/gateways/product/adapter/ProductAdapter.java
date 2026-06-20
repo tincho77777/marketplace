@@ -1,5 +1,7 @@
 package com.rest.marketplace.infrastructure.gateways.product.adapter;
 
+import com.rest.marketplace.domain.enums.product.ProductSortField;
+import com.rest.marketplace.domain.enums.product.SortDirection;
 import com.rest.marketplace.domain.models.common.PaginationRequest;
 import com.rest.marketplace.infrastructure.rest.common.response.PageResponse;
 import com.rest.marketplace.domain.models.product.Product;
@@ -8,6 +10,7 @@ import com.rest.marketplace.infrastructure.gateways.product.mapper.ProductMapper
 import com.rest.marketplace.infrastructure.gateways.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -37,11 +40,19 @@ public class ProductAdapter implements ProductPersistencePort {
 	}
 
 	@Override
-	public PageResponse<Product> findAll(PaginationRequest paginationRequest) {
+	public PageResponse<Product> findAll(PaginationRequest paginationRequest,
+	                                     ProductSortField sortField,
+	                                     SortDirection sortDirection) {
+
+		var sort = Sort.by(
+				sortDirection == SortDirection.ASC ? Sort.Direction.ASC : Sort.Direction.DESC,
+				sortField.getField()
+		);
 
 		var pageable = PageRequest.of(
 				paginationRequest.getPage(),
-				paginationRequest.getSize()
+				paginationRequest.getSize(),
+				sort
 		);
 
 		var page = productRepository.findAll(pageable);
@@ -57,5 +68,10 @@ public class ProductAdapter implements ProductPersistencePort {
 				.totalElements(page.getTotalElements())
 				.totalPages(page.getTotalPages())
 				.build();
+	}
+
+	@Override
+	public void deleteById(Long id) {
+		productRepository.deleteById(id);
 	}
 }

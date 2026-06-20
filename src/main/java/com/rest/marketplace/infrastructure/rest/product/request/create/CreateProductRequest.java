@@ -1,4 +1,4 @@
-package com.rest.marketplace.infrastructure.rest.product.request;
+package com.rest.marketplace.infrastructure.rest.product.request.create;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
