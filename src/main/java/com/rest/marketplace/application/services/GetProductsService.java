@@ -18,9 +18,9 @@ public class GetProductsService implements GetProductsUc {
 
 	@Override
 	public PageResponse<Product> getProducts(PaginationRequest request) {
-		var sortField = ProductSortField.from(request.getSort());
-		var sortDirection = SortDirection.from(request.getDirection());
-		return productPersistencePort.findAll(request, sortField, sortDirection);
+		var sortFieldValidated = ProductSortField.from(request.getSort());
+		var sortDirectionValidated = SortDirection.from(request.getDirection());
+		return productPersistencePort.findAll(request, sortFieldValidated, sortDirectionValidated);
 	}
 
 }

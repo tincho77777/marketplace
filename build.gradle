@@ -2,6 +2,8 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.5.15'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'jacoco'
+	id 'org.sonarqube' version '6.0.1.5171'
 }
 
 group = 'com.rest'
@@ -17,11 +19,16 @@ repositories {
 	mavenCentral()
 }
 
+configurations {
+	mockitoAgent
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.16'
+
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.h2database:h2'
@@ -30,8 +37,45 @@ dependencies {
 	testCompileOnly 'org.projectlombok:lombok'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	testAnnotationProcessor 'org.projectlombok:lombok'
+
+	mockitoAgent("org.mockito:mockito-core:5.23.0") { transitive = false }
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+	jvmArgs "-javaagent:${configurations.mockitoAgent.asPath}"
+	finalizedBy jacocoTestReport  // genera el reporte después de los tests
 }
+
+jacocoTestReport {
+	dependsOn test
+	reports {
+		xml.required = true   // necesario para SonarCloud
+		html.required = true  // útil para ver localmente
+	}
+	// excluimos clases que no tienen sentido medir cobertura
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: [
+					'**/config/**',
+					'**/*Application*',
+					'**/entity/**',
+					'**/swagger/**',
+					'**/request/**',
+					'**/response/**',
+					'**/enums/**',
+					'**/exceptions/**'
+			])
+		}))
+	}
+}
+
+sonar {
+	properties {
+		property 'sonar.projectKey', 'tincho77777_marketplace'
+		property 'sonar.organization', 'tincho77777'
+		property 'sonar.host.url', 'https://sonarcloud.io'
+		property 'sonar.coverage.jacoco.xmlReportPaths', 'build/reports/jacoco/test/jacocoTestReport.xml'
+	}
+}
+
