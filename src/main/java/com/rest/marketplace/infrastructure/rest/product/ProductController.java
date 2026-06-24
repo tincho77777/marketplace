@@ -40,6 +40,7 @@ public class ProductController implements SwaggerProductController {
 		return ProductResponseMapper.toResponse(createProductUc.createProduct(CreateProductRequestMapper.toDomain(request)));
 	}
 
+	//borrar
 	@GetMapping
 	public PageResponse<ProductResponse> getProducts(@RequestParam(defaultValue = "0")
 	                                                 @Min(value = 0, message = "La página no puede ser negativa")
