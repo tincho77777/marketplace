@@ -64,7 +64,8 @@ jacocoTestReport {
 					'**/request/**',
 					'**/response/**',
 					'**/enums/**',
-					'**/exceptions/**'
+					'**/exceptions/**',
+					'**/*Exception.class'
 			])
 		}))
 	}
