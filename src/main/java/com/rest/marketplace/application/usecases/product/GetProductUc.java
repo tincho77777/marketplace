@@ -4,5 +4,5 @@ import com.rest.marketplace.domain.models.product.Product;
 
 public interface GetProductUc {
 
-	Product findById(Long id);
+	Product getProductById(Long id);
 }

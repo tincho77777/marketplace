@@ -39,7 +39,7 @@ class GetProductServiceTest {
 				.thenReturn(Optional.of(productEsperado));
 
 		// ACT
-		Product resultado = getProductService.findById(id);
+		Product resultado = getProductService.getProductById(id);
 
 		// ASSERT
 		assertThat(resultado).isNotNull();
@@ -55,7 +55,7 @@ class GetProductServiceTest {
 		when(productPersistencePort.findById(id)).thenReturn(Optional.empty());
 
 		//assertThrows espera que el código dentro del lambda lance exactamente esa excepción. Si la lanza, el test pasa. Si no la lanza, o lanza una diferente, el test falla. El lambda () -> es necesario porque si escribieras getProductService.findById(id) directamente, la excepción se lanzaría antes de que assertThrows pueda capturarla.
-		assertThrows(ProductNotFoundException.class, () -> getProductService.findById(id));
+		assertThrows(ProductNotFoundException.class, () -> getProductService.getProductById(id));
 		verify(productPersistencePort, times(1)).findById(id);
 	}
 }

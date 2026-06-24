@@ -3,8 +3,10 @@ package com.rest.marketplace.utilities;
 import com.rest.marketplace.domain.enums.product.Category;
 import com.rest.marketplace.domain.models.common.PaginationRequest;
 import com.rest.marketplace.domain.models.product.Product;
+import com.rest.marketplace.infrastructure.gateways.product.entity.ProductEntity;
 import com.rest.marketplace.infrastructure.rest.common.response.PageResponse;
 import com.rest.marketplace.infrastructure.rest.product.request.create.CreateProductRequest;
+import com.rest.marketplace.infrastructure.rest.product.request.update.UpdateProductRequest;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -94,6 +96,47 @@ public class TestData {
 				.size(10)
 				.totalElements(0L)
 				.totalPages(0)
+				.build();
+	}
+
+	public static UpdateProductRequest updateProductRequest(){
+		return new UpdateProductRequest(
+				"TV Samsung",
+				"Tv 50 pulgadas UHD",
+				new BigDecimal("150000"),
+				10,
+				"tecnologia"
+		);
+	}
+
+	public static UpdateProductRequest updateProductRequestInvalido(){
+		return new UpdateProductRequest(
+				"",
+				"Tv 50 pulgadas UHD",
+				new BigDecimal("150000"),
+				10,
+				"tecnologia"
+		);
+	}
+
+	public static UpdateProductRequest updateProductRequestConCategoriaInvalida(){
+		return new UpdateProductRequest(
+				"",
+				"Tv 50 pulgadas UHD",
+				new BigDecimal("150000"),
+				10,
+				"TECH"
+		);
+	}
+
+	public static ProductEntity productoEntity() {
+		return ProductEntity.builder()
+				.id(PRODUCT_ID)
+				.title("TV Samsung")
+				.description("Tv 50 pulgadas UHD")
+				.price(new BigDecimal("150000"))
+				.stock(10)
+				.category(Category.TECH)
 				.build();
 	}
 

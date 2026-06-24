@@ -14,7 +14,7 @@ public class GetProductService implements GetProductUc {
 	private final ProductPersistencePort productPersistencePort;
 
 	@Override
-	public Product findById(Long id) {
+	public Product getProductById(Long id) {
 		return productPersistencePort.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
 	}
 }

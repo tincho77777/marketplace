@@ -21,6 +21,6 @@ public enum ProductSortField {
 		return Arrays.stream(values())
 				.filter(sort -> sort.field.equalsIgnoreCase(value))
 				.findFirst()
-				.orElseThrow(() -> new BadRequestException("Campo de ordeamiento invalido" + value));
+				.orElseThrow(() -> new BadRequestException("Campo de ordenamiento invalido: " + value));
 	}
 }

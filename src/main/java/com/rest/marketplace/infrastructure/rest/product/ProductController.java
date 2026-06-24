@@ -31,7 +31,7 @@ public class ProductController implements SwaggerProductController {
 
 	@GetMapping("/{idProducto}")
 	public ProductResponse getProduct(@PathVariable Long idProducto){
-		return ProductResponseMapper.toResponse(getProductUc.findById(idProducto));
+		return ProductResponseMapper.toResponse(getProductUc.getProductById(idProducto));
 	}
 
 	@PostMapping
