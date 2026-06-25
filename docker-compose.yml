@@ -8,8 +8,8 @@ services:
       POSTGRES_DB: marketplace
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      PGTZ: UTC
-      TZ: UTC
+      PGTZ: UTC   # ← timezone del servidor postgres
+      TZ: UTC     # ← timezone del contenedor
     ports:
       - "5432:5432"
     volumes:
@@ -19,5 +19,15 @@ services:
       -c timezone=UTC
       -c log_timezone=UTC
 
+  redis:
+    image: redis:7-alpine
+    container_name: marketplace-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes  # ← activa la persistencia para que si el contenedor se reinicia no pierdas el cache.
+
 volumes:
   postgres_data:
+  redis_data:

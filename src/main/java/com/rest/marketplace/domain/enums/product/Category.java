@@ -4,11 +4,12 @@ import com.rest.marketplace.domain.exceptions.InvalidCategoryException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 @Getter
 @RequiredArgsConstructor
-public enum Category {
+public enum Category implements Serializable {
 
 	TECH("tecnologia"),
 	HOME("hogar"),

@@ -8,6 +8,7 @@ import com.rest.marketplace.infrastructure.rest.common.response.PageResponse;
 import com.rest.marketplace.domain.models.product.Product;
 import com.rest.marketplace.domain.ports.product.ProductPersistencePort;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,6 +17,10 @@ public class GetProductsService implements GetProductsUc {
 
 	private final ProductPersistencePort productPersistencePort;
 
+	@Cacheable(
+			value = "products",
+			key = "#request.page + '-' + #request.size + '-' + #request.sort + '-' + #request.direction"
+	)
 	@Override
 	public PageResponse<Product> getProducts(PaginationRequest request) {
 		var sortFieldValidated = ProductSortField.from(request.getSort());
