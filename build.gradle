@@ -24,15 +24,24 @@ configurations {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.16'
+	// WEB / API REST
+	implementation 'org.springframework.boot:spring-boot-starter-web'  // Spring MVC para exponer endpoints REST
+	implementation 'org.springframework.boot:spring-boot-starter-validation'  // Validaciones con anotaciones (@NotNull, @Size, @Email, etc.)
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.16'  // Swagger / OpenAPI para documentar y probar la API desde el navegador
 
-	compileOnly 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'com.h2database:h2'
+	// PERSISTENCIA / BASE DE DATOS
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'  // Spring Data JPA (Repositories, Entities, Hibernate)
+	implementation 'org.flywaydb:flyway-core'  // Migraciones versionadas de base de datos
+	implementation 'org.flywaydb:flyway-database-postgresql'
+	runtimeOnly 'org.postgresql:postgresql'  // Driver de PostgreSQL
+
+	// DESARROLLO
+	compileOnly 'org.projectlombok:lombok'  // Generación automática de código (getters, setters, builders, etc.)
 	annotationProcessor 'org.projectlombok:lombok'
+
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'  // Reinicio automático de la aplicación durante el desarrollo
+
+	// TESTING
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testCompileOnly 'org.projectlombok:lombok'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
