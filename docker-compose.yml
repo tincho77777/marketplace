@@ -18,6 +18,7 @@ services:
       postgres
       -c timezone=UTC
       -c log_timezone=UTC
+      
 
   redis:
     image: redis:7-alpine
@@ -28,6 +29,20 @@ services:
       - redis_data:/data
     command: redis-server --appendonly yes  # ← activa la persistencia para que si el contenedor se reinicia no pierdas el cache.
 
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: marketplace-rabbitmq
+    ports:
+      - "5672:5672"     # ← puerto para la conexión AMQP
+      - "15672:15672"   # ← puerto para el panel de administración web
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
 volumes:
   postgres_data:
   redis_data:
+  rabbitmq_data:

@@ -1,11 +1,14 @@
 package com.rest.marketplace.application.services;
 
 import com.rest.marketplace.domain.enums.product.Category;
+import com.rest.marketplace.domain.models.events.ProductCreatedEvent;
 import com.rest.marketplace.domain.models.product.Product;
+import com.rest.marketplace.domain.ports.out.ProductEventPort;
 import com.rest.marketplace.domain.ports.product.ProductPersistencePort;
 import com.rest.marketplace.utilities.TestData;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -21,6 +24,9 @@ class CreateProductServiceTest {
 	@Mock
 	private ProductPersistencePort productPersistencePort;
 
+	@Mock
+	private ProductEventPort productEventPort;
+
 	@InjectMocks
 	private CreateProductService createProductService;
 
@@ -28,6 +34,8 @@ class CreateProductServiceTest {
 	void debeCrearUnProductoCuandoHayDatosValidos(){
 		Product productoSinId = TestData.productoDominioSinId();
 		Product productoGuardado = TestData.productoDominio();
+		ArgumentCaptor<ProductCreatedEvent> captor =
+				ArgumentCaptor.forClass(ProductCreatedEvent.class);
 
 		when(productPersistencePort.save(productoSinId)).thenReturn(productoGuardado);
 
@@ -38,6 +46,14 @@ class CreateProductServiceTest {
 				.extracting(Product::getTitle, Product::getDescription, Product::getPrice, Product::getStock, Product::getCategory)
 				.containsExactly("TV Samsung", "Tv 50 pulgadas UHD", new BigDecimal(150000), 10, Category.TECH);
 		verify(productPersistencePort, times(1)).save(productoSinId);
+		verify(productEventPort).publishProductCreated(captor.capture());
+		ProductCreatedEvent event = captor.getValue();
+
+		assertThat(event.getId()).isEqualTo(productoGuardado.getId());
+		assertThat(event.getTitle()).isEqualTo(productoGuardado.getTitle());
+		assertThat(event.getPrice()).isEqualByComparingTo(productoGuardado.getPrice());
+		assertThat(event.getCategory()).isEqualTo(productoGuardado.getCategory());
+		assertThat(event.getCreatedAt()).isNotNull();
 	}
 
 }
