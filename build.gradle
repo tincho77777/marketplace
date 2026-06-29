@@ -48,6 +48,10 @@ dependencies {
 	/* RABBIT MQ */
 	implementation 'org.springframework.boot:spring-boot-starter-amqp'
 
+	/* RESILIENCE4J - CIRCUIT BREAKER */
+	implementation 'io.github.resilience4j:resilience4j-spring-boot3:2.2.0'
+	implementation 'org.springframework.boot:spring-boot-starter-aop' //obligatorio porque Resilience4j usa AOP (programación orientada a aspectos) para interceptar los métodos anotados con @CircuitBreaker y @Retry.
+
 	/* TESTING */
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testCompileOnly 'org.projectlombok:lombok'
