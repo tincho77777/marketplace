@@ -2,6 +2,7 @@ package com.rest.marketplace.infrastructure.rest.advice;
 
 import com.rest.marketplace.domain.exceptions.BadRequestException;
 import com.rest.marketplace.domain.exceptions.InvalidCategoryException;
+import com.rest.marketplace.domain.exceptions.OutboxEventException;
 import com.rest.marketplace.domain.exceptions.ProductNotFoundException;
 import com.rest.marketplace.infrastructure.rest.advice.enums.ErrorCode;
 import com.rest.marketplace.infrastructure.rest.advice.response.ErrorResponse;
@@ -105,6 +106,20 @@ public class GlobalExceptionHandler {
 		var error = new ErrorResponse(
 				status.value(),
 				ErrorCode.BAD_REQUEST.name(),
+				exception.getMessage(),
+				LocalDateTime.now(),
+				request.getRequestURI()
+		);
+		return ResponseEntity.status(status).body(error);
+	}
+
+	@ExceptionHandler(OutboxEventException.class)
+	public ResponseEntity<ErrorResponse> handleOutboxEvent(OutboxEventException exception,
+	                                                       HttpServletRequest request){
+		var status = HttpStatus.INTERNAL_SERVER_ERROR;
+		var error = new ErrorResponse(
+				status.value(),
+				ErrorCode.OUTBOX_ERROR.name(),
 				exception.getMessage(),
 				LocalDateTime.now(),
 				request.getRequestURI()

@@ -3,7 +3,7 @@ package com.rest.marketplace.application.services;
 import com.rest.marketplace.domain.enums.product.Category;
 import com.rest.marketplace.domain.models.events.ProductCreatedEvent;
 import com.rest.marketplace.domain.models.product.Product;
-import com.rest.marketplace.domain.ports.out.ProductEventPort;
+import com.rest.marketplace.domain.ports.outbox.OutboxPort;
 import com.rest.marketplace.domain.ports.product.ProductPersistencePort;
 import com.rest.marketplace.utilities.TestData;
 import org.junit.jupiter.api.Test;
@@ -25,7 +25,7 @@ class CreateProductServiceTest {
 	private ProductPersistencePort productPersistencePort;
 
 	@Mock
-	private ProductEventPort productEventPort;
+	private OutboxPort outboxPort;
 
 	@InjectMocks
 	private CreateProductService createProductService;
@@ -46,7 +46,7 @@ class CreateProductServiceTest {
 				.extracting(Product::getTitle, Product::getDescription, Product::getPrice, Product::getStock, Product::getCategory)
 				.containsExactly("TV Samsung", "Tv 50 pulgadas UHD", new BigDecimal(150000), 10, Category.TECH);
 		verify(productPersistencePort, times(1)).save(productoSinId);
-		verify(productEventPort).publishProductCreated(captor.capture());
+		verify(outboxPort).saveProductCreatedEvent(captor.capture());
 		ProductCreatedEvent event = captor.getValue();
 
 		assertThat(event.getId()).isEqualTo(productoGuardado.getId());
