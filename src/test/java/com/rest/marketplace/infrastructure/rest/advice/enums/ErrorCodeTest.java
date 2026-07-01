@@ -10,14 +10,15 @@ class ErrorCodeTest {
     void debeContenerTodosLosCodigosDeErrorEsperados() {
         ErrorCode[] values = ErrorCode.values();
 
-        assertThat(values).hasSize(6);
+        assertThat(values).hasSize(7);
         assertThat(values).containsExactly(
                 ErrorCode.PRODUCT_NOT_FOUND,
                 ErrorCode.VALIDATION_ERROR,
                 ErrorCode.INTERNAL_SERVER_ERROR,
                 ErrorCode.INVALID_CATEGORY,
                 ErrorCode.BAD_REQUEST,
-                ErrorCode.OUTBOX_ERROR
+                ErrorCode.OUTBOX_ERROR,
+                ErrorCode.SQS_ERROR
         );
     }
 
@@ -61,6 +62,13 @@ class ErrorCodeTest {
         ErrorCode code = ErrorCode.valueOf("OUTBOX_ERROR");
 
         assertThat(code).isEqualTo(ErrorCode.OUTBOX_ERROR);
+    }
+
+    @Test
+    void debeResolverSqsErrorDesdeNombre() {
+        ErrorCode code = ErrorCode.valueOf("SQS_ERROR");
+
+        assertThat(code).isEqualTo(ErrorCode.SQS_ERROR);
     }
 }
 

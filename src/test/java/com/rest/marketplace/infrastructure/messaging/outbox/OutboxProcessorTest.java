@@ -6,6 +6,8 @@ import com.rest.marketplace.domain.models.events.ProductCreatedEvent;
 import com.rest.marketplace.domain.models.outbox.OutboxEvent;
 import com.rest.marketplace.domain.ports.out.ProductEventPort;
 import com.rest.marketplace.domain.ports.outbox.OutboxPort;
+import com.rest.marketplace.infrastructure.gateways.messaging.EventPublisherFactory;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,6 +28,9 @@ class OutboxProcessorTest {
     private OutboxPort outboxPort;
 
     @Mock
+    private EventPublisherFactory eventPublisherFactory;
+
+    @Mock
     private ProductEventPort productEventPort;
 
     @Mock
@@ -33,6 +38,11 @@ class OutboxProcessorTest {
 
     @InjectMocks
     private OutboxProcessor outboxProcessor;
+
+    @BeforeEach
+    void init() {
+        lenient().when(eventPublisherFactory.getPublisher()).thenReturn(productEventPort);
+    }
 
     @Test
     void debeProcessarEventosPendientesCorrectamente() throws Exception {
