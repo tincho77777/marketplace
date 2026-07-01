@@ -13,13 +13,13 @@ import org.springframework.test.util.ReflectionTestUtils;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class ProductEventPublisherTest {
+class ProductRabbitEventPublisherTest {
 
 	@Mock
 	private RabbitTemplate rabbitTemplate;
 
 	@InjectMocks
-	private ProductEventPublisher publisher;
+	private ProductRabbitEventPublisher publisher;
 
 	@BeforeEach
 	void init() {

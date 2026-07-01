@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ProductEventPublisher implements ProductEventPort {
+public class ProductRabbitEventPublisher implements ProductEventPort {
 
 	private final RabbitTemplate rabbitTemplate;
 

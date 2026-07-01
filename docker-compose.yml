@@ -42,7 +42,21 @@ services:
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
 
+  localstack:
+    image: localstack/localstack:4.6.0
+    container_name: marketplace-localstack
+    ports:
+      - "4566:4566" # ← puerto único para todos los servicios de AWS simulados
+    environment:
+      - SERVICES=sqs # ← le dice a LocalStack que solo levante el servicio de SQS
+      - DEBUG=1
+      - AWS_DEFAULT_REGION=us-east-1
+    volumes:
+      - localstack_data:/var/lib/localstack
+      - /var/run/docker.sock:/var/run/docker.sock
+
 volumes:
   postgres_data:
   redis_data:
   rabbitmq_data:
+  localstack_data:

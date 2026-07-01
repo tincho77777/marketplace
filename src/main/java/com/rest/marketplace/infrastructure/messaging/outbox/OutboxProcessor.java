@@ -3,8 +3,8 @@ package com.rest.marketplace.infrastructure.messaging.outbox;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rest.marketplace.domain.models.events.ProductCreatedEvent;
 import com.rest.marketplace.domain.models.outbox.OutboxEvent;
-import com.rest.marketplace.domain.ports.out.ProductEventPort;
 import com.rest.marketplace.domain.ports.outbox.OutboxPort;
+import com.rest.marketplace.infrastructure.gateways.messaging.EventPublisherFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -20,7 +20,7 @@ import java.util.List;
 public class OutboxProcessor {
 
 	private final OutboxPort outboxPort;
-	private final ProductEventPort productEventPort;
+	private final EventPublisherFactory eventPublisherFactory;
 	private final ObjectMapper objectMapper;
 
 	@Scheduled(fixedDelay = 30000) // corre cada 30 segundos
@@ -31,13 +31,14 @@ public class OutboxProcessor {
 
 		log.info("📬 Procesando {} eventos pendientes", pendingEvents.size());
 
+		var publisher = eventPublisherFactory.getPublisher(); // decide en runtime
+
 		for (OutboxEvent outboxEvent : pendingEvents) {
 			try {
 				ProductCreatedEvent event = objectMapper
 						.readValue(outboxEvent.getPayload(), ProductCreatedEvent.class);
 
-				productEventPort.publishProductCreated(event); // ← usa el publisher con Circuit Breaker
-
+				publisher.publishProductCreated(event);
 				outboxPort.markAsProcessed(outboxEvent);
 				log.info("✅ Evento procesado: {}", event.getTitle());
 

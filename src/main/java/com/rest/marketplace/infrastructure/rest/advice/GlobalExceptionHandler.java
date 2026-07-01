@@ -1,9 +1,6 @@
 package com.rest.marketplace.infrastructure.rest.advice;
 
-import com.rest.marketplace.domain.exceptions.BadRequestException;
-import com.rest.marketplace.domain.exceptions.InvalidCategoryException;
-import com.rest.marketplace.domain.exceptions.OutboxEventException;
-import com.rest.marketplace.domain.exceptions.ProductNotFoundException;
+import com.rest.marketplace.domain.exceptions.*;
 import com.rest.marketplace.infrastructure.rest.advice.enums.ErrorCode;
 import com.rest.marketplace.infrastructure.rest.advice.response.ErrorResponse;
 import com.rest.marketplace.infrastructure.rest.advice.response.ValidationErrorResponse;
@@ -120,6 +117,20 @@ public class GlobalExceptionHandler {
 		var error = new ErrorResponse(
 				status.value(),
 				ErrorCode.OUTBOX_ERROR.name(),
+				exception.getMessage(),
+				LocalDateTime.now(),
+				request.getRequestURI()
+		);
+		return ResponseEntity.status(status).body(error);
+	}
+
+	@ExceptionHandler(SqsEventException.class)
+	public ResponseEntity<ErrorResponse> handleSqsEvent(SqsEventException exception,
+	                                                    HttpServletRequest request) {
+		var status = HttpStatus.INTERNAL_SERVER_ERROR;
+		var error = new ErrorResponse(
+				status.value(),
+				ErrorCode.SQS_ERROR.name(),
 				exception.getMessage(),
 				LocalDateTime.now(),
 				request.getRequestURI()
