@@ -16,6 +16,7 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -29,6 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 //Le dice a Spring que levante solo la capa web, únicamente lo necesario para testear el controller: filtros, serialización JSON, validaciones, el @RestControllerAdvice. No levanta la base de datos, no levanta los services, no levanta los adapters. Es mucho más rápido que levantar el contexto de Spring. El (ProductController.class) le dice específicamente qué controller querés testear, para no levantar todos los controllers de la aplicación.
 @WebMvcTest(ProductController.class)
+@ActiveProfiles("test")
 class ProductControllerTest {
 
 	//MockMvc es el objeto que te permite simular llamadas HTTP sin levantar un servidor real.
