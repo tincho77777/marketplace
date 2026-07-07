@@ -18,7 +18,9 @@ public class RedisConfig {
 
 	@Bean
 	public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
-		RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
+
+		// config por defecto para todos los caches (products, etc)
+		RedisCacheConfiguration defaultConfig = RedisCacheConfiguration.defaultCacheConfig()
 				.entryTtl(Duration.ofMinutes(10))  //define que el cache expira a los 10 minutos.
 				.serializeKeysWith(
 						RedisSerializationContext.SerializationPair
@@ -30,8 +32,12 @@ public class RedisConfig {
 				)
 				.disableCachingNullValues(); //evita que se cacheen resultados nulos, importante para no cachear un "producto no encontrado".
 
+		// config específica para el tipo de cambio (1 hora)
+		RedisCacheConfiguration exchangeRateConfig = defaultConfig.entryTtl(Duration.ofHours(1));
+
 		return RedisCacheManager.builder(connectionFactory)
-				.cacheDefaults(config)
+				.cacheDefaults(defaultConfig )
+				.withCacheConfiguration("exchangeRate", exchangeRateConfig) // ← config particular
 				.build();
 	}
 }

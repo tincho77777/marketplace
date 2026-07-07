@@ -65,6 +65,9 @@ dependencies {
 	/* VAULT */
 	implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
 
+	/* OPEN FEIGN */
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
 	/* TESTING */
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testCompileOnly 'org.projectlombok:lombok'

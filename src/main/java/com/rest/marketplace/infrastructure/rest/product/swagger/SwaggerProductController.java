@@ -4,6 +4,7 @@ import com.rest.marketplace.infrastructure.rest.advice.response.ErrorResponse;
 import com.rest.marketplace.infrastructure.rest.common.response.PageResponse;
 import com.rest.marketplace.infrastructure.rest.product.request.create.CreateProductRequest;
 import com.rest.marketplace.infrastructure.rest.product.request.update.UpdateProductRequest;
+import com.rest.marketplace.infrastructure.rest.product.response.ProductPriceResponse;
 import com.rest.marketplace.infrastructure.rest.product.response.ProductResponse;
 import com.rest.marketplace.infrastructure.utilities.httpcodes.HttpCodes;
 import com.rest.marketplace.infrastructure.utilities.mensajes.Mensajes;
@@ -16,6 +17,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import org.springframework.http.ResponseEntity;
 
 @Tag(name = "Productos Resource", description = "Operaciones relacionadas con productos")
 public interface SwaggerProductController {
@@ -173,4 +175,28 @@ public interface SwaggerProductController {
 	void deleteProduct(@Parameter(description = "Identificador del producto", example = "1", required = true)
 	                   Long idProducto
 	);
+
+	@Operation(summary = "Obtener precio del producto en ARS y USD", description = "Obtiene el precio del producto con conversión a USD usando el tipo de cambio actual")
+	@ApiResponse(
+			responseCode = HttpCodes.OK,
+			description = Mensajes.REQUEST_OK
+	)
+	@ApiResponse(
+			responseCode = HttpCodes.NOT_FOUND,
+			description = Mensajes.RECURSO_NO_ENCONTRADO,
+			content = @Content(
+					mediaType = "application/json",
+					schema = @Schema(implementation = ErrorResponse.class)
+			)
+	)
+	@ApiResponse(
+			responseCode = HttpCodes.INTERNAL_SERVER_ERROR,
+			description = Mensajes.ERROR_INTERNO_SERVIDOR,
+			content = @Content(
+					mediaType = "application/json",
+					schema = @Schema(implementation = ErrorResponse.class)
+			)
+	)
+	ResponseEntity<ProductPriceResponse> getProductPrice(@Parameter(description = "Identificador del producto", example = "1", required = true)
+	                                                     Long idProducto);
 }

@@ -46,6 +46,7 @@ class ProductControllerTest {
 	@MockitoBean private GetProductsUc getProductsUc;
 	@MockitoBean private UpdateProductUc updateProductUc;
 	@MockitoBean private DeleteProductUc deleteProductUc;
+	@MockitoBean private GetProductPriceUc getProductPriceUc;
 
 	/**
 	 * TEST DE ALTA DE PRODUCTOS

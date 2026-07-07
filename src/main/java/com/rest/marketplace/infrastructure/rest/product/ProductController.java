@@ -9,6 +9,7 @@ import com.rest.marketplace.infrastructure.rest.product.request.create.CreatePro
 import com.rest.marketplace.infrastructure.rest.product.request.create.mapper.CreateProductRequestMapper;
 import com.rest.marketplace.infrastructure.rest.product.request.update.UpdateProductRequest;
 import com.rest.marketplace.infrastructure.rest.product.request.update.mapper.UpdateProductRequestMapper;
+import com.rest.marketplace.infrastructure.rest.product.response.ProductPriceResponse;
 import com.rest.marketplace.infrastructure.rest.product.response.ProductResponse;
 import com.rest.marketplace.infrastructure.rest.product.response.mapper.ProductResponseMapper;
 import com.rest.marketplace.infrastructure.rest.product.swagger.SwaggerProductController;
@@ -16,6 +17,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,6 +30,7 @@ public class ProductController implements SwaggerProductController {
 	private final GetProductsUc getProductsUc;
 	private final UpdateProductUc updateProductUc;
 	private final DeleteProductUc deleteProductUc;
+	private final GetProductPriceUc getProductPriceUc;
 
 	@GetMapping("/{idProducto}")
 	public ProductResponse getProduct(@PathVariable Long idProducto){
@@ -78,5 +81,10 @@ public class ProductController implements SwaggerProductController {
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteProduct(@PathVariable Long idProducto){
 		deleteProductUc.deleteProduct(idProducto);
+	}
+
+	@GetMapping("/{idProducto}/price")
+	public ResponseEntity<ProductPriceResponse> getProductPrice(@PathVariable Long idProducto){
+		return ResponseEntity.ok(getProductPriceUc.getProductPrice(idProducto));
 	}
 }
