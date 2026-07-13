@@ -21,6 +21,7 @@ public class ProductEntity {
 
 	private String title;
 
+	@Column(columnDefinition = "TEXT")
 	private String description;
 
 	private BigDecimal price;

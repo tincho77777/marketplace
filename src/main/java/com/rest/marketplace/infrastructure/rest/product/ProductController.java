@@ -9,6 +9,7 @@ import com.rest.marketplace.infrastructure.rest.product.request.create.CreatePro
 import com.rest.marketplace.infrastructure.rest.product.request.create.mapper.CreateProductRequestMapper;
 import com.rest.marketplace.infrastructure.rest.product.request.update.UpdateProductRequest;
 import com.rest.marketplace.infrastructure.rest.product.request.update.mapper.UpdateProductRequestMapper;
+import com.rest.marketplace.infrastructure.rest.product.response.ImportProductsResponse;
 import com.rest.marketplace.infrastructure.rest.product.response.ProductPriceResponse;
 import com.rest.marketplace.infrastructure.rest.product.response.ProductResponse;
 import com.rest.marketplace.infrastructure.rest.product.response.mapper.ProductResponseMapper;
@@ -31,6 +32,7 @@ public class ProductController implements SwaggerProductController {
 	private final UpdateProductUc updateProductUc;
 	private final DeleteProductUc deleteProductUc;
 	private final GetProductPriceUc getProductPriceUc;
+	private final ImportProductsUc importProductsUc;
 
 	@GetMapping("/{idProducto}")
 	public ProductResponse getProduct(@PathVariable Long idProducto){
@@ -86,5 +88,15 @@ public class ProductController implements SwaggerProductController {
 	@GetMapping("/{idProducto}/price")
 	public ResponseEntity<ProductPriceResponse> getProductPrice(@PathVariable Long idProducto){
 		return ResponseEntity.ok(getProductPriceUc.getProductPrice(idProducto));
+	}
+
+	@PostMapping("/import")
+	@ResponseStatus(HttpStatus.CREATED)
+	public ImportProductsResponse importProducts() {
+		int count = importProductsUc.importFromFakeStore();
+		return ImportProductsResponse.builder()
+				.importedCount(count)
+				.message(count + " productos importados exitosamente desde FakeStore")
+				.build();
 	}
 }

@@ -68,6 +68,9 @@ dependencies {
 	/* OPEN FEIGN */
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
+	/* WEB FLUX PERO PARA PODER USAR WEBCLIENT QUE ES EL MOTOR DE HTTPINTERFACE */
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
 	/* TESTING */
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testCompileOnly 'org.projectlombok:lombok'

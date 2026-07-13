@@ -4,6 +4,7 @@ import com.rest.marketplace.infrastructure.rest.advice.response.ErrorResponse;
 import com.rest.marketplace.infrastructure.rest.common.response.PageResponse;
 import com.rest.marketplace.infrastructure.rest.product.request.create.CreateProductRequest;
 import com.rest.marketplace.infrastructure.rest.product.request.update.UpdateProductRequest;
+import com.rest.marketplace.infrastructure.rest.product.response.ImportProductsResponse;
 import com.rest.marketplace.infrastructure.rest.product.response.ProductPriceResponse;
 import com.rest.marketplace.infrastructure.rest.product.response.ProductResponse;
 import com.rest.marketplace.infrastructure.utilities.httpcodes.HttpCodes;
@@ -199,4 +200,27 @@ public interface SwaggerProductController {
 	)
 	ResponseEntity<ProductPriceResponse> getProductPrice(@Parameter(description = "Identificador del producto", example = "1", required = true)
 	                                                     Long idProducto);
+
+	@Operation(summary = "Obtener productos importados", description = "Obtiene todos los productos importados desde Fake Store")
+	@ApiResponse(
+			responseCode = HttpCodes.OK,
+			description = Mensajes.REQUEST_OK
+	)
+	@ApiResponse(
+			responseCode = HttpCodes.NOT_FOUND,
+			description = Mensajes.RECURSO_NO_ENCONTRADO,
+			content = @Content(
+					mediaType = "application/json",
+					schema = @Schema(implementation = ErrorResponse.class)
+			)
+	)
+	@ApiResponse(
+			responseCode = HttpCodes.INTERNAL_SERVER_ERROR,
+			description = Mensajes.ERROR_INTERNO_SERVIDOR,
+			content = @Content(
+					mediaType = "application/json",
+					schema = @Schema(implementation = ErrorResponse.class)
+			)
+	)
+	ImportProductsResponse importProducts();
 }
