@@ -1,6 +1,5 @@
-version: '3.8'
-
 services:
+
   postgres:
     image: postgres:16-bullseye
     container_name: marketplace-postgres
@@ -18,6 +17,11 @@ services:
       postgres
       -c timezone=UTC
       -c log_timezone=UTC
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
       
 
   redis:
@@ -28,6 +32,11 @@ services:
     volumes:
       - redis_data:/data
     command: redis-server --appendonly yes  # ← activa la persistencia para que si el contenedor se reinicia no pierdas el cache.
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 
   rabbitmq:
@@ -41,6 +50,12 @@ services:
       RABBITMQ_DEFAULT_PASS: admin
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
 
   localstack:
     image: localstack/localstack:4.6.0
@@ -54,6 +69,12 @@ services:
     volumes:
       - localstack_data:/var/lib/localstack
       - /var/run/docker.sock:/var/run/docker.sock
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:4566/_localstack/health || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
 
   vault:
     image: hashicorp/vault:1.20.3
@@ -63,6 +84,11 @@ services:
     environment:
       VAULT_DEV_ROOT_TOKEN_ID: myroot  # ← arranca Vault en modo desarrollo con un token fijo myroot. En producción nunca usarías esto, pero para desarrollo local es perfecto porque no necesitás inicializar ni unseal Vault manualmente.
       VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:8200
+      DB_HOST: postgres
+      REDIS_HOST: redis
+      RABBIT_HOST: rabbitmq
+      SQS_ENDPOINT: http://localstack:4566
+      EXCHANGE_RATE_API_KEY: 848e46f7b20b6bdf9d887b8a  # ← key real
     cap_add:
       - IPC_LOCK  # ←  es necesario para que Vault pueda bloquear memoria y evitar que los secretos se escriban en el swap del sistema operativo.
     volumes:
@@ -72,6 +98,52 @@ services:
       sh -c "vault server -dev &
              sh /vault/init/vault-init.sh &&
              wait"
+    healthcheck:
+      test: [ "CMD-SHELL", "VAULT_ADDR=http://127.0.0.1:8200 vault status || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+
+  marketplace-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: marketplace-api
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_CLOUD_VAULT_URI: http://vault:8200  # ← solo existe cuando se corre el docker-compose
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      localstack:
+        condition: service_healthy
+      vault:
+        condition: service_healthy
+
+
+  notification-service:
+      build:
+        context: ../notification-service
+        dockerfile: Dockerfile
+      container_name: marketplace-notification
+      ports:
+        - "8081:8081"
+      environment:
+        SPRING_PROFILES_ACTIVE: docker
+        SPRING_RABBITMQ_HOST: rabbitmq
+        SPRING_RABBITMQ_PORT: 5672
+        SPRING_RABBITMQ_USERNAME: admin
+        SPRING_RABBITMQ_PASSWORD: admin
+      depends_on:
+        rabbitmq:
+          condition: service_healthy
 
 volumes:
   postgres_data:

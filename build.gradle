@@ -34,6 +34,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'  // Spring MVC para exponer endpoints REST
 	implementation 'org.springframework.boot:spring-boot-starter-validation'  // Validaciones con anotaciones (@NotNull, @Size, @Email, etc.)
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.16'  // Swagger / OpenAPI para documentar y probar la API desde el navegador
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'  // Endpoints de monitoreo (/actuator/health, /actuator/info, etc.)
 
 	/* PERSISTENCIA / BASE DE DATOS */
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'  // Spring Data JPA (Repositories, Entities, Hibernate)
