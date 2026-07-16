@@ -105,6 +105,51 @@ services:
       retries: 10
 
 
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    container_name: marketplace-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+    depends_on:
+      marketplace-api:
+        condition: service_started
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -q --tries=1 http://localhost:9090/-/healthy -O /dev/null || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+  grafana:
+    image: grafana/grafana:12.1.1
+    container_name: marketplace-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: false
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      prometheus:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --tries=1 http://localhost:3000/api/health -O /dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
   marketplace-api:
     build:
       context: .
@@ -151,3 +196,5 @@ volumes:
   rabbitmq_data:
   localstack_data:
   vault_data:
+  prometheus_data:
+  grafana_data:

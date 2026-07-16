@@ -1,0 +1,16 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'marketplace-api'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['marketplace-api:8080']
+    scrape_interval: 5s # ← significa que Prometheus consulta las métricas cada 5 segundos.
+
+  - job_name: 'notification-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['notification-service:8081']
+    scrape_interval: 5s
