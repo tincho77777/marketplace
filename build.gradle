@@ -75,6 +75,11 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'  // Endpoints de monitoreo (/actuator/health, /actuator/info, etc.)
 	implementation 'io.micrometer:micrometer-registry-prometheus' // le dice a Micrometer que exporte las métricas en el formato que Prometheus entiende.
 
+	/* DISTRIBUTED TRACING */
+	implementation 'io.micrometer:micrometer-tracing-bridge-brave'  // es el puente entre Micrometer Tracing y Brave
+	implementation 'io.zipkin.reporter2:zipkin-reporter-brave' // envía los traces a Zipkin
+	implementation 'com.github.loki4j:loki-logback-appender:1.5.1'
+
 	/* TESTING */
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testCompileOnly 'org.projectlombok:lombok'
