@@ -162,6 +162,21 @@ services:
       retries: 5
 
 
+  loki:
+    image: grafana/loki:3.5.3
+    container_name: marketplace-loki
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - loki_data:/loki
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -q --tries=1 http://localhost:3100/ready -O /dev/null || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
   marketplace-api:
     build:
       context: .
@@ -184,6 +199,8 @@ services:
       vault:
         condition: service_healthy
       zipkin:
+        condition: service_healthy
+      loki:
         condition: service_healthy
 
 
@@ -214,3 +231,4 @@ volumes:
   vault_data:
   prometheus_data:
   grafana_data:
+  loki_data:

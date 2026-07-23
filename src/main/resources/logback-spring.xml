@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+    <springProperty scope="context" name="appName" source="spring.application.name" defaultValue="marketplace"/>
+    <springProperty scope="context" name="loki.url" source="loki.url" defaultValue="http://localhost:3100"/>
+
+    <!-- Appender de Loki con configuración completa y robusta -->
+    <appender name="LOKI" class="com.github.loki4j.logback.Loki4jAppender">
+        <!-- Configuración HTTP -->
+        <http>
+            <url>${loki.url}/loki/api/v1/push</url>
+            <!-- Timeouts para conexión y lectura (ms) -->
+            <connectionTimeoutMs>5000</connectionTimeoutMs>
+            <requestTimeoutMs>10000</requestTimeoutMs>
+            <!-- Reintentos en caso de fallo -->
+            <retries>3</retries>
+            <maxRetryBackoffMs>30000</maxRetryBackoffMs>
+        </http>
+        <!-- Formato de logs enviados a Loki -->
+        <format>
+            <!-- Labels para agrupar logs en Loki -->
+            <label>
+                <pattern>application=${appName},level=%level,hostname=${HOSTNAME},environment=${spring.profiles.active:-local}</pattern>
+            </label>
+            <!-- Mensaje de log con información de trazabilidad -->
+            <message>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - traceId=%X{traceId:-N/A} spanId=%X{spanId:-N/A} - %msg%ex{short}%n</pattern>
+            </message>
+        </format>
+        <!-- Buffer y batching: agrupa logs antes de enviar a Loki -->
+        <batchSize>100</batchSize>
+        <batchTimeoutMs>10000</batchTimeoutMs>
+        <!-- Encoding UTF-8 para caracteres especiales -->
+        <useJson>true</useJson>
+    </appender>
+
+    <!-- Async appender para no bloquear el thread de logs -->
+    <appender name="ASYNC_LOKI" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="LOKI"/>
+        <!-- Capacidad máxima de la cola -->
+        <queueSize>512</queueSize>
+        <!-- Mantener logs incluso si la cola está llena (no descartar) -->
+        <discardingThreshold>0</discardingThreshold>
+        <!-- Timeout para enviar logs pendientes al cerrar -->
+        <shutdownWait>10000</shutdownWait>
+        <!-- Incluir MDC (Mapped Diagnostic Context) - necesario para traceId y spanId -->
+        <includeCallerData>true</includeCallerData>
+    </appender>
+
+    <!-- Configuración de logging para debugging de Loki4j y Spring Cloud Sleuth -->
+    <logger name="com.github.loki4j" level="DEBUG"/>
+    <logger name="org.springframework.cloud.sleuth" level="DEBUG"/>
+
+    <!-- Root logger: envía logs a consola y a Loki de forma asincrónica -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ASYNC_LOKI"/>
+    </root>
+
+</configuration>
