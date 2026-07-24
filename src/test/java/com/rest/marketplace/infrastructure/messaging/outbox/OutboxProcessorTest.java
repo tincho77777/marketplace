@@ -84,7 +84,9 @@ class OutboxProcessorTest {
 
         outboxProcessor.processOutbox();
 
-        verify(outboxPort).markAsFailed(outboxEvent);
+        // En caso de error, el evento permanece en PENDING para reintento
+        // No se marca como fallido ni como procesado inmediatamente
+        verify(outboxPort, never()).markAsFailed(any());
         verify(outboxPort, never()).markAsProcessed(any());
         verify(productEventPort, never()).publishProductCreated(any());
     }

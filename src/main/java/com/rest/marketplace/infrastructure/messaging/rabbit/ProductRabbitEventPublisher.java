@@ -40,5 +40,6 @@ public class ProductRabbitEventPublisher implements ProductEventPort {
 		log.error("🔴 Causa: {}", ex.getMessage());
 		log.error("⚠️  El evento se debería guardar para reintento (Outbox Pattern)");
 		log.error("==========================================");
+		throw new RuntimeException(ex);
 	}
 }
