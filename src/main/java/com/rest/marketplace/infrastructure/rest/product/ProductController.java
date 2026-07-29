@@ -93,7 +93,7 @@ public class ProductController implements SwaggerProductController {
 	@PostMapping("/import")
 	@ResponseStatus(HttpStatus.CREATED)
 	public ImportProductsResponse importProducts() {
-		int count = importProductsUc.importFromFakeStore();
+		int count = importProductsUc.importFromFakeStore().join();
 		return ImportProductsResponse.builder()
 				.importedCount(count)
 				.message(count + " productos importados exitosamente desde FakeStore")

@@ -51,10 +51,11 @@ services:
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
     healthcheck:
-      test: [ "CMD", "rabbitmq-diagnostics", "ping" ]
-      interval: 10s
+      test: [ "CMD", "bash", "-c", "rabbitmq-diagnostics ping && rabbitmq-diagnostics status | grep -q 'Runtime'" ]
+      interval: 5s
       timeout: 5s
-      retries: 10
+      retries: 20
+      start_period: 30s
 
 
   localstack:

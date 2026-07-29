@@ -137,4 +137,40 @@ public class GlobalExceptionHandler {
 		);
 		return ResponseEntity.status(status).body(error);
 	}
+
+	@ExceptionHandler(RateLimitException.class)
+	public ResponseEntity<ErrorResponse> handleRateLimit(
+			RateLimitException exception,
+			HttpServletRequest request) {
+
+		var status = HttpStatus.TOO_MANY_REQUESTS;
+
+		var error = new ErrorResponse(
+				status.value(),
+				ErrorCode.RATE_LIMIT_EXCEEDED.name(),
+				exception.getMessage(),
+				LocalDateTime.now(),
+				request.getRequestURI()
+		);
+
+		return ResponseEntity.status(status).body(error);
+	}
+
+	@ExceptionHandler(ServiceBusyException.class)
+	public ResponseEntity<ErrorResponse> handleServiceBusy(
+			ServiceBusyException exception,
+			HttpServletRequest request) {
+
+		var status = HttpStatus.SERVICE_UNAVAILABLE;
+
+		var error = new ErrorResponse(
+				status.value(),
+				ErrorCode.SERVICE_UNAVAILABLE.name(),
+				exception.getMessage(),
+				LocalDateTime.now(),
+				request.getRequestURI()
+		);
+
+		return ResponseEntity.status(status).body(error);
+	}
 }
