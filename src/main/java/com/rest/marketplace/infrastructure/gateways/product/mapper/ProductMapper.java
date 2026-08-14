@@ -2,10 +2,10 @@ package com.rest.marketplace.infrastructure.gateways.product.mapper;
 
 import com.rest.marketplace.domain.models.product.Product;
 import com.rest.marketplace.infrastructure.gateways.product.entity.ProductEntity;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class ProductMapper {
-
-	private ProductMapper(){}
 
 	public static Product toDomain(ProductEntity entity){
 		if(entity == null){

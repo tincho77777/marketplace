@@ -7,6 +7,7 @@ REDIS_HOST=${REDIS_HOST:-localhost}
 RABBIT_HOST=${RABBIT_HOST:-localhost}
 SQS_ENDPOINT=${SQS_ENDPOINT:-http://localhost:4566}
 EXCHANGE_RATE_API_KEY=${EXCHANGE_RATE_API_KEY:-TU_API_KEY}
+JWT_SECRET=${JWT_SECRET:-dGhpcyBpcyBhIHZlcnkgbG9uZyBzZWNyZXQga2V5IGZvciBqd3Qgc2lnbmluZyAyMDI0}
 
 echo "⏳ Esperando que Vault esté listo..."
 sleep 3
@@ -18,6 +19,7 @@ echo "🔧 DB_HOST: ${DB_HOST}"
 echo "🔧 REDIS_HOST: ${REDIS_HOST}"
 echo "🔧 RABBIT_HOST: ${RABBIT_HOST}"
 echo "🔧 SQS_ENDPOINT: ${SQS_ENDPOINT}"
+echo "🔧 JWT secret cargado ✅"
 
 vault kv put secret/marketplace/database \
   spring.datasource.url="jdbc:postgresql://${DB_HOST}:5432/marketplace" \
@@ -44,6 +46,11 @@ vault kv put secret/marketplace/aws \
 
 vault kv put secret/marketplace/external-apis \
   exchange-rate.api-key="${EXCHANGE_RATE_API_KEY}"
+
+vault kv put secret/marketplace/jwt \
+ jwt.secret="${JWT_SECRET}" \
+ jwt.access-token-expiration='900000' \
+ jwt.refresh-token-expiration='604800000'
 
 echo "✅ Secretos cargados exitosamente en Vault"
 echo "🌐 Ambiente: DB=${DB_HOST}, REDIS=${REDIS_HOST}, RABBIT=${RABBIT_HOST}"

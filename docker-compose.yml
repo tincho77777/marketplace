@@ -90,6 +90,7 @@ services:
       RABBIT_HOST: rabbitmq
       SQS_ENDPOINT: http://localstack:4566
       EXCHANGE_RATE_API_KEY: 848e46f7b20b6bdf9d887b8a  # ← key real
+      JWT_SECRET: dGhpcyBpcyBhIHZlcnkgbG9uZyBzZWNyZXQga2V5IGZvciBqd3Qgc2lnbmluZyAyMDI0  # ← esto crea la variable de entorno DENTRO del contenedor de Vault
     cap_add:
       - IPC_LOCK  # ←  es necesario para que Vault pueda bloquear memoria y evitar que los secretos se escriban en el swap del sistema operativo.
     volumes:

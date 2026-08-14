@@ -1,4 +1,4 @@
-package com.rest.marketplace.application.services;
+package com.rest.marketplace.application.services.product;
 
 import com.rest.marketplace.application.usecases.product.ImportProductsUc;
 import com.rest.marketplace.domain.exceptions.RateLimitException;

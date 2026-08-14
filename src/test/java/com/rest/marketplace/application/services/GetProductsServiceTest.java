@@ -1,5 +1,6 @@
 package com.rest.marketplace.application.services;
 
+import com.rest.marketplace.application.services.product.GetProductsService;
 import com.rest.marketplace.domain.enums.product.ProductSortField;
 import com.rest.marketplace.domain.enums.product.SortDirection;
 import com.rest.marketplace.domain.exceptions.BadRequestException;

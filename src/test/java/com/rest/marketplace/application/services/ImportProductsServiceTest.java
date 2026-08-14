@@ -1,5 +1,6 @@
 package com.rest.marketplace.application.services;
 
+import com.rest.marketplace.application.services.product.ImportProductsService;
 import com.rest.marketplace.domain.models.product.Product;
 import com.rest.marketplace.domain.ports.fakestore.FakeStorePort;
 import com.rest.marketplace.domain.ports.product.ProductPersistencePort;

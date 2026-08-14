@@ -1,5 +1,6 @@
 package com.rest.marketplace.application.services;
 
+import com.rest.marketplace.application.services.product.DeleteProductService;
 import com.rest.marketplace.domain.exceptions.ProductNotFoundException;
 import com.rest.marketplace.domain.ports.product.ProductPersistencePort;
 import com.rest.marketplace.utilities.TestData;

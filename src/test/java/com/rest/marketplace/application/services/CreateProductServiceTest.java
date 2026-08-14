@@ -1,5 +1,6 @@
 package com.rest.marketplace.application.services;
 
+import com.rest.marketplace.application.services.product.CreateProductService;
 import com.rest.marketplace.domain.enums.product.Category;
 import com.rest.marketplace.domain.models.events.ProductCreatedEvent;
 import com.rest.marketplace.domain.models.product.Product;
